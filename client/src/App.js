@@ -7,11 +7,15 @@ function App() {
 
   const [reference, setReference] = useState('')
   const [result, setResult] = useState('')
+
   const [selectedLanguage, setSelectedLanguage] = useState('')
   const [resultLanguage, setResultLanguage] = useState('Russian')
+
   const [errorMessage, setErrorMessage] = useState('')
+
   const [isLoading, setIsLoading] = useState(false)
   const [progress, setProgress] = useState(0)
+  const [sendButtonState, setSendButtonState] = useState(false)
 
   const [showAdditionalField, setShowAdditionalField] = useState(false)
   const [additionalResult, setAdditionalResult] = useState('')
@@ -46,6 +50,7 @@ function App() {
     setResult("")
     setAdditionalResult("")
     setShowAdditionalField(false)
+    setSendButtonState(true)
 
     if (reference === "") {
       setErrorMessage("input text can't be empty.")
@@ -114,6 +119,7 @@ function App() {
       setAdditionalResult(data.translated_reference)
       setProgress(100)
       setIsLoading(false)
+      setSendButtonState(false)
     })
     .catch(error => {
       console.error('error:', error)
@@ -181,7 +187,12 @@ function App() {
       <br />
       
       <div>
-        <button className="ui button" onClick = { handleClick } id="send.button">send</button>
+        <button 
+          className="ui button" 
+          onClick = { handleClick } 
+          id="send.button"
+          disabled={ sendButtonState }
+        >send</button>
       </div> 
 
       {isLoading && (
