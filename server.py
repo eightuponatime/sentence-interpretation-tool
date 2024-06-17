@@ -56,10 +56,14 @@ def get_reference():
       resultLanguage = resultLanguage
     )
     
-    print(f"translated reference for {reference} is {translated_reference}")
     result = candidate.get_highest_score(translated_reference, client, resultLanguage) 
  
-  return jsonify({ "result": result, "translated_reference": translated_reference })
+  #return jsonify({ "result": result, "translated_reference": translated_reference })
+  return jsonify({
+    "result": result["result"],
+    "results": result["results"],
+    "translated_reference": translated_reference
+  })
 
 # [API] detect the input language
 @app.route("/detect_language", methods = ["POST"], strict_slashes = False)

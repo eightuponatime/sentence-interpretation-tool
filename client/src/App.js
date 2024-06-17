@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import 'semantic-ui-css/semantic.min.css'
 import './App.css'
-import { Progress, TabPane, Tab } from 'semantic-ui-react'
+import { Progress, TabPane, Tab, Popup } from 'semantic-ui-react'
+import AccordionComponent from './AccordionComponent'
 
 function App() {
 
   const [reference, setReference] = useState('')
   const [result, setResult] = useState('')
+  const [results, setResults] = useState([])
 
+  // language of input text
   const [selectedLanguage, setSelectedLanguage] = useState('')
-  const [resultLanguage, setResultLanguage] = useState('Russian')
+  // language from the radiobuttons
+  const [resultLanguage, setResultLanguage] = useState('Russian');
 
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -54,6 +58,7 @@ function App() {
 
     if (reference === "") {
       setErrorMessage("input text can't be empty.")
+      setSendButtonState(false)
       return
     }
     
@@ -65,7 +70,8 @@ function App() {
     if (detectedLanguage !== "Russian" && detectedLanguage !== "Kazakh" 
     && detectedLanguage !== "English") {
       setErrorMessage("input text language must be Kazakh, Russian or English.")
-      setIsLoading(false)
+      setIsLoading(false)      
+      setSendButtonState(false)
       return
     }
 
@@ -115,8 +121,15 @@ function App() {
       response => response.json()
     )
     .then(data => {
+      if(!data || !Array.isArray(data.results) || data.results.length === 0) {
+        setErrorMessage("no results found")
+        setIsLoading(false)
+        setSendButtonState(false)
+        return
+      }
       setResult(data.result)
       setAdditionalResult(data.translated_reference)
+      setResults(data.results)
       setProgress(100)
       setIsLoading(false)
       setSendButtonState(false)
@@ -152,12 +165,17 @@ function App() {
 
   //tab for same languages
   const panes = [
-    { menuItem: 'alternative meaning', render: () => <TabPane>
+    { menuItem: 'alternative meaning', render: () => <TabPane style={{ fontSize: 18 }}>
       <div className="ui form">
         <textarea value = { result } placeholder = "alternative meaning" readOnly></textarea>          
       </div>
     </TabPane> }
   ]
+
+  // (language chooser) radio button value setter
+  const handleRadioChange = ( value ) => {
+    setResultLanguage(value);
+  }
 
   return (
     <div className="ui center aligned container">
@@ -199,18 +217,39 @@ function App() {
         <Progress percent={progress} indicating />
       )}
 
-      <div className = "ui visible message">
-        <p>choose the result language</p>
-        <select 
-          className = "ui search dropdown"
-          value = { resultLanguage }
-          onChange = { (e) => setResultLanguage(e.target.value) }
-        >
-          <option value="Russian">Russian</option>
-          <option value="English">English</option>
-          <option value="Kazakh">Kazakh</option>        
-        </select>
+      <div className="ui visible message">
+        <div className="radioGroup"> 
+          <div className="radioButton">
+            <input 
+              type="radio" 
+              value="Russian" 
+              checked = { resultLanguage === "Russian"}
+              onChange= { () => handleRadioChange("Russian")}
+            />
+            <label htmlFor="Russian" className="radioLabel">Russian</label>  
+          </div>
+          <div className="radioButton">
+            <input 
+              type="radio" 
+              value="English" 
+              checked = { resultLanguage === "English"}
+              onChange= { () => handleRadioChange("English")}
+            />
+            <label htmlFor="English" className="radioLabel">English</label>  
+          </div>
+          <div className="radioButton">
+            <input 
+              type="radio" 
+              value="Kazakh" 
+              checked = { resultLanguage === "Kazakh"}
+              onChange= { () => handleRadioChange("Kazakh")}
+            />
+            <label htmlFor="Kazakh" className="radioLabel">Kazakh</label>  
+          </div>
+        </div>
       </div>
+
+      <br />
 
       <div>
         {showAdditionalField && (
@@ -221,6 +260,10 @@ function App() {
         )}
       </div>
 
+      <br />
+      {result && (
+        <AccordionComponent data={results} result={result} />
+      )}
     </div>
   )
 }

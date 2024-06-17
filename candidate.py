@@ -34,12 +34,13 @@ async def get_candidate(reference, i, client, language):
     print(e.response)
     result = ""
 
-  if re.search('^"',result) and re.search('".$',result):    
-    result = re.sub('^"', '', result, count = 1)
-    result = re.sub('".$', '', result, count = 1)
-  elif re.search('^"',result) and re.search('"$',result):
-    result = re.sub('^"', '', result, count = 1)
-    result = re.sub('"$', '', result, count = 1)
+  if result is not None:
+    if re.search('^"',result) and re.search('".$',result):    
+      result = re.sub('^"', '', result, count = 1)
+      result = re.sub('".$', '', result, count = 1)
+    elif re.search('^"',result) and re.search('"$',result):
+      result = re.sub('^"', '', result, count = 1)
+      result = re.sub('"$', '', result, count = 1)
     
   print(f"candidate[{i}]{result}")
   return result
@@ -65,16 +66,20 @@ def get_highest_score(reference, client, language):
   
   m = Mystem()
   hypotheses = m.lemmatize(reference)    
-  max_score = 0.0
+  max_score = 0.0 
   result = ""
+  results = []
 
   print("┌─────────────────────────────────────────────────────────────┐")
   print("│chrf")
   for candidate in candidate_list:
     chrf = CHRF()
-    
+ 
     if language != "kazakh": 
-      ref = m.lemmatize(candidate)
+      try:
+        ref = m.lemmatize(candidate)
+      except AttributeError:
+        ref = ""
     else:
       ref = candidate
     
@@ -88,10 +93,18 @@ def get_highest_score(reference, client, language):
     print(f"│{candidate} : {score_str}") 
     
     score = float(score_str)
+    results.append({ "candidate": candidate, "score": score})
+    
     if score > max_score:
       max_score = score
       result = candidate
+
   print("└─────────────────────────────────────────────────────────────┘") 
   
-  return result
+  if result == "":
+    result = reference 
+    results = ""
+      
+  return { "result": result, "results": results }
+
 

@@ -2,6 +2,7 @@ myenv/
 .env
 __pycache__/
 deprecated/
+model/
 
 
 

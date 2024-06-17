@@ -32,6 +32,5 @@ def get_translation(reference, selectedLanguage, resultLanguage):
 
   response = request.json()
   
-  print(response)
   print(f"translation: {response[0]["translations"][0]["text"]}")  
   return response[0]["translations"][0]["text"] 

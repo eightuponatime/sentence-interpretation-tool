@@ -26,7 +26,7 @@ def spell_check(reference, language):
     if misspelled:
       new_word = spell.correction(word)
       if new_word is None:
-        new_word = ""
+        new_word = word
       result.append(new_word)
     else:
       result.append(word)
