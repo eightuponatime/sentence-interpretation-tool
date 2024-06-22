@@ -26,7 +26,7 @@ function App() {
 
   // call an api to detect language
   const languageDetection = () => {
-    return fetch("/detect_language", {
+    return fetch("https://amd64flask-backend-r5vrjzoy5a-uc.a.run.app/detect_language", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -110,7 +110,7 @@ function App() {
 
     updateProgress(50, 100) 
 
-    fetch("/get_reference", {
+    fetch("https://amd64flask-backend-r5vrjzoy5a-uc.a.run.app/get_reference", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

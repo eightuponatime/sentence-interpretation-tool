@@ -3,7 +3,7 @@ myenv/
 __pycache__/
 deprecated/
 model/
-
+envik/
 
 
 client/node_modules

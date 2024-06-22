@@ -1,5 +1,6 @@
 import candidate
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from openai import AsyncAzureOpenAI
 from dotenv import load_dotenv
 import os
@@ -9,6 +10,12 @@ import spell_check
 
 app = Flask(__name__)
 load_dotenv()
+
+CORS(app,origins="https://amd64react-frontend-r5vrjzoy5a-uc.a.run.app",
+  allow_headers=["Content-Type","Authorization"],
+  methods=["GET","POST","PUT","DELETE","OPTIONS"],
+  supports_credentials=True
+)
 
 api_key = os.environ.get("AZURE_OPENAI_API_KEY")
 endpoint = os.environ.get("AZURE_OPENAI_API_ENDPOINT")
@@ -58,7 +65,6 @@ def get_reference():
     
     result = candidate.get_highest_score(translated_reference, client, resultLanguage) 
  
-  #return jsonify({ "result": result, "translated_reference": translated_reference })
   return jsonify({
     "result": result["result"],
     "results": result["results"],
@@ -76,7 +82,7 @@ def detect_language():
     case 'ru':
       language = "Russian"
     case 'kk':
-      language = "Kazakh"
+      language = "Kazakhзадание"
     case 'en':
       language = "English"
   
@@ -85,4 +91,5 @@ def detect_language():
   
 # start server
 if __name__ == '__main__':
-  app.run(host="127.0.0.1", port=8000, debug=True)
+  #app.run(host="127.0.0.1", port=int(os.environ.get("PORT", 8000)), debug=True)
+  app.run(port=int(os.environ.get("PORT", 8000)))

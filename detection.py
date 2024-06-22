@@ -1,4 +1,3 @@
-from lingua import Language, LanguageDetectorBuilder
 import os, requests, uuid, json
 from dotenv import load_dotenv
 
