@@ -4,17 +4,17 @@ This project requires Python 3.11+  because of asyncio lib and python developer 
 ## Project setup
 ### Clone the repository
 ```sh
-$ git clone https://github.com/eightuponatime/sentence-interpretation-tool.git
+git clone https://github.com/eightuponatime/sentence-interpretation-tool.git
 ```
 ### Install all dependencies
 Using pip:
 ```sh
-$ pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 ### Compiles development
 ```sh
-$ python server.py
+python server.py
 ```
 ### Compiles production
 see backend Dockerfile
